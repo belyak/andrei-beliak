@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page.name }} - {{ page.position }}</title>
+    <style>
+        /* Base styles inspired by Microsoft's clean approach with Apple's aesthetics */
+        :root {
+            --primary-color: #0078D7;
+            --secondary-color: #005A9E;
+            --background-color: #FFFFFF;
+            --text-color: #333333;
+            --accent-color: #F2F2F2;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card {
+            background-color: var(--background-color);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px var(--shadow-color);
+            padding: 40px;
+            margin: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .name {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--primary-color);
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: 400;
+            color: var(--secondary-color);
+            letter-spacing: 1px;
+        }
+
+        .note {
+            margin-top: 40px;
+            text-align: center;
+            font-style: italic;
+            color: #888;
+        }
+
+        /* Interactive decoration elements */
+        .decoration-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .decoration {
+            position: absolute;
+            background-color: var(--primary-color);
+            opacity: 0.05;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease;
+        }
+
+        /* Custom button style */
+        .button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 500;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="decoration-container" id="decoration-container"></div>
+    
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h1 class="name">{{ page.name }}</h1>
+                <h2 class="title">{{ page.position }}</h2>
+            </div>
+            
+            <div class="note">
+                <p>{{ page.contact_note }}</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Interactive decoration elements
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('decoration-container');
+            const numElements = 12;
+            
+            // Create decoration elements
+            for (let i = 0; i < numElements; i++) {
+                const decoration = document.createElement('div');
+                decoration.classList.add('decoration');
+                
+                // Random size between 50 and 200px
+                const size = Math.random() * 150 + 50;
+                decoration.style.width = `${size}px`;
+                decoration.style.height = `${size}px`;
+                
+                // Random initial position
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                decoration.style.left = `${posX}%`;
+                decoration.style.top = `${posY}%`;
+                
+                container.appendChild(decoration);
+            }
+            
+            // Make elements respond to mouse movement
+            document.addEventListener('mousemove', function(e) {
+                const decorations = document.querySelectorAll('.decoration');
+                
+                decorations.forEach((decoration, index) => {
+                    const speed = 0.03 - (index * 0.002); // Different speeds for parallax effect
+                    const x = (window.innerWidth / 2 - e.clientX) * speed;
+                    const y = (window.innerHeight / 2 - e.clientY) * speed;
+                    
+                    decoration.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+                });
+            });
+        });
+    </script>
+</body>
+</html>
