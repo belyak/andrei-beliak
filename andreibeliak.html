@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Andrei Beliak - Principal AI-Developer</title>
+    <style>
+        /* Base styles - will be dynamically replaced at runtime */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #121212;
+            overflow: hidden;
+            color: white;
+        }
+        
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: #fff;
+            font-size: 24px;
+            letter-spacing: 4px;
+            transition: opacity 0.5s ease-out;
+        }
+        
+        #loading .binary {
+            position: absolute;
+            font-family: monospace;
+            font-size: 14px;
+            opacity: 0.3;
+            color: #0f0;
+            pointer-events: none;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            perspective: 1000px;
+            margin: 0 auto;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .card {
+            background-color: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            padding: 40px;
+            margin: 20px;
+            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .name {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #00E5FF;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.7), 0 0 20px rgba(0, 229, 255, 0.5), 0 0 30px rgba(0, 229, 255, 0.3);
+            letter-spacing: 2px;
+        }
+        
+        .title {
+            font-size: 20px;
+            font-weight: 400;
+            color: #0097A7;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+        
+        .note {
+            margin-top: 40px;
+            text-align: center;
+            font-style: italic;
+            color: rgba(255, 255, 255, 0.6);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 20px;
+        }
+        
+        .decoration-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+        
+        .decoration {
+            position: absolute;
+            background: linear-gradient(135deg, #00E5FF, transparent);
+            opacity: 0.03;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        
+        .circuit-line {
+            position: absolute;
+            background-color: #00E5FF;
+            opacity: 0.1;
+            height: 1px;
+            width: 100px;
+            transform-origin: left center;
+        }
+        
+        .data-node {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background-color: #00E5FF;
+            border-radius: 50%;
+            opacity: 0.5;
+            box-shadow: 0 0 5px #00E5FF;
+        }
+        
+        .data-node.pulse {
+            animation: pulse 3s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.5); }
+            100% { opacity: 0.2; transform: scale(1); }
+        }
+        
+        .matrix-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                linear-gradient(rgba(18, 18, 18, 0) 49.5%, rgba(0, 229, 255, 0.05) 50%, rgba(18, 18, 18, 0) 50.5%),
+                linear-gradient(90deg, rgba(18, 18, 18, 0) 49.5%, rgba(0, 229, 255, 0.05) 50%, rgba(18, 18, 18, 0) 50.5%);
+            background-size: 40px 40px;
+            opacity: 0.5;
+            z-index: -1;
+        }
+        
+        /* Unusual animated cursor effect */
+        #cursor-follower {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #00E5FF;
+            border-radius: 50%;
+            z-index: 9999;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            opacity: 0.6;
+            transition: width 0.2s, height 0.2s, border-color 0.2s;
+        }
+        
+        /* Interactive text glitch effect */
+        .glitch {
+            position: relative;
+        }
+        
+        .glitch:hover:after {
+            content: attr(data-text);
+            position: absolute;
+            left: 2px;
+            text-shadow: -1px 0 red;
+            top: 0;
+            color: white;
+            overflow: hidden;
+            clip: rect(0, 900px, 0, 0);
+            animation: glitch-anim 2s infinite linear alternate-reverse;
+        }
+        
+        .glitch:hover:before {
+            content: attr(data-text);
+            position: absolute;
+            left: -2px;
+            text-shadow: 1px 0 blue;
+            top: 0;
+            color: white;
+            overflow: hidden;
+            clip: rect(0, 900px, 0, 0);
+            animation: glitch-anim2 3s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim {
+            0% { clip: rect(1px, 9999px, 1px, 0); }
+            10% { clip: rect(1px, 9999px, 2px, 0); }
+            20% { clip: rect(33px, 9999px, 1px, 0); }
+            30% { clip: rect(3px, 9999px, 2px, 0); }
+            40% { clip: rect(8px, 9999px, 3px, 0); }
+            50% { clip: rect(2px, 9999px, 40px, 0); }
+            60% { clip: rect(43px, 9999px, 5px, 0); }
+            70% { clip: rect(56px, 9999px, 1px, 0); }
+            80% { clip: rect(3px, 9999px, 2px, 0); }
+            90% { clip: rect(1px, 9999px, 2px, 0); }
+            100% { clip: rect(1px, 9999px, 3px, 0); }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 65px, 0); }
+            15% { clip: rect(52px, 9999px, 28px, 0); }
+            30% { clip: rect(15px, 9999px, 6px, 0); }
+            45% { clip: rect(40px, 9999px, 14px, 0); }
+            60% { clip: rect(66px, 9999px, 33px, 0); }
+            75% { clip: rect(42px, 9999px, 15px, 0); }
+            90% { clip: rect(1px, 9999px, 5px, 0); }
+            100% { clip: rect(18px, 9999px, 79px, 0); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading screen with binary rain effect -->
+    <div id="loading">
+        <div class="text">CYBERNETIC SYSTEM INITIALIZING</div>
+    </div>
+
+    <div id="decoration-container" class="decoration-container"></div>
+    <div class="matrix-grid"></div>
+    <div id="cursor-follower"></div>
+    
+    <div class="container">
+        <div id="card" class="card">
+            <div class="header">
+                <h1 class="name glitch" data-text="Andrei Beliak">Andrei Beliak</h1>
+                <h2 class="title glitch" data-text="Principal AI-Developer">Principal AI-Developer</h2>
+            </div>
+            
+            <div class="note">
+                <p id="cybernetic-phrase">Cybernetic systems operational</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize loading screen with binary rain effect
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingEl = document.getElementById('loading');
+            const cols = Math.floor(window.innerWidth / 20);
+            const rows = Math.floor(window.innerHeight / 20);
+            
+            for (let i = 0; i < cols * 2; i++) {
+                const binaryEl = document.createElement('div');
+                binaryEl.className = 'binary';
+                binaryEl.style.left = (i * 20) + 'px';
+                binaryEl.style.top = Math.random() * window.innerHeight + 'px';
+                binaryEl.textContent = Math.random() > 0.5 ? '1' : '0';
+                loadingEl.appendChild(binaryEl);
+                
+                // Animate falling
+                animateBinary(binaryEl);
+            }
+            
+            function animateBinary(el) {
+                let y = parseFloat(el.style.top);
+                const speed = 2 + Math.random() * 5;
+                
+                function update() {
+                    y += speed;
+                    if (y > window.innerHeight) {
+                        y = -20;
+                        el.textContent = Math.random() > 0.5 ? '1' : '0';
+                    }
+                    el.style.top = y + 'px';
+                    
+                    if (loadingEl.style.opacity !== '0') {
+                        requestAnimationFrame(update);
+                    }
+                }
+                
+                requestAnimationFrame(update);
+            }
+            
+            // Show the page after a short delay
+            setTimeout(function() {
+                // Hide loading screen
+                loadingEl.style.opacity = '0';
+                setTimeout(function() {
+                    loadingEl.style.display = 'none';
+                }, 500);
+                
+                // Initialize the page elements
+                initPageElements();
+                
+                // Add typing animation to name and title
+                animateText(document.querySelector('.name'), 50);
+                setTimeout(() => {
+                    animateText(document.querySelector('.title'), 70);
+                }, 1000);
+                
+            }, 2000);
+        });
+        
+        function initPageElements() {
+            // Create random decorative elements
+            createCircuitElements();
+            
+            // Set up mouse movement for parallax effect
+            document.addEventListener('mousemove', handleMouseMovement);
+            
+            // Set random cybernetic phrase
+            setCyberneticPhrase();
+            
+            // Setup 3D card effect
+            const card = document.getElementById('card');
+            card.addEventListener('mousemove', handle3DEffect);
+            card.addEventListener('mouseleave', resetCardPosition);
+        }
+        
+        function createCircuitElements() {
+            const container = document.getElementById('decoration-container');
+            
+            // Create data nodes
+            const numNodes = 20 + Math.floor(Math.random() * 30);
+            for (let i = 0; i < numNodes; i++) {
+                const node = document.createElement('div');
+                node.className = 'data-node';
+                
+                // Random position
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                node.style.left = posX + '%';
+                node.style.top = posY + '%';
+                
+                // Some nodes will pulse
+                if (Math.random() > 0.7) {
+                    node.classList.add('pulse');
+                }
+                
+                container.appendChild(node);
+            }
+            
+            // Create circuit lines
+            const numLines = 30 + Math.floor(Math.random() * 40);
+            for (let i = 0; i < numLines; i++) {
+                const line = document.createElement('div');
+                line.className = 'circuit-line';
+                
+                // Random position and rotation
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const rotation = Math.random() * 360;
+                const length = 50 + Math.random() * 150;
+                
+                line.style.left = posX + '%';
+                line.style.top = posY + '%';
+                line.style.width = length + 'px';
+                line.style.transform = 'rotate(' + rotation + 'deg)';
+                
+                container.appendChild(line);
+            }
+            
+            // Create background orbs
+            const numOrbs = 8 + Math.floor(Math.random() * 8);
+            for (let i = 0; i < numOrbs; i++) {
+                const orb = document.createElement('div');
+                orb.className = 'decoration';
+                
+                // Random size
+                const size = 100 + Math.random() * 300;
+                orb.style.width = size + 'px';
+                orb.style.height = size + 'px';
+                
+                // Random position
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                orb.style.left = posX + '%';
+                orb.style.top = posY + '%';
+                
+                container.appendChild(orb);
+            }
+        }
+        
+        function handleMouseMovement(e) {
+            // Move decorative elements
+            const decorations = document.getElementsByClassName('decoration');
+            for (let i = 0; i < decorations.length; i++) {
+                const decoration = decorations[i];
+                const speed = 0.04 - (i * 0.003);
+                const x = (window.innerWidth / 2 - e.clientX) * speed;
+                const y = (window.innerHeight / 2 - e.clientY) * speed;
+                
+                decoration.style.transform = 
+                    `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+            }
+            
+            // Update cursor follower
+            const cursorFollower = document.getElementById('cursor-follower');
+            cursorFollower.style.left = e.clientX + 'px';
+            cursorFollower.style.top = e.clientY + 'px';
+            
+            // Check if cursor is over card to change follower style
+            const card = document.getElementById('card');
+            const cardRect = card.getBoundingClientRect();
+            
+            if (e.clientX >= cardRect.left && e.clientX <= cardRect.right &&
+                e.clientY >= cardRect.top && e.clientY <= cardRect.bottom) {
+                cursorFollower.style.width = '30px';
+                cursorFollower.style.height = '30px';
+                cursorFollower.style.borderColor = '#00FFD1';
+            } else {
+                cursorFollower.style.width = '20px';
+                cursorFollower.style.height = '20px';
+                cursorFollower.style.borderColor = '#00E5FF';
+            }
+        }
+        
+        function handle3DEffect(e) {
+            const card = e.currentTarget;
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const angleX = (y - centerY) / 20;
+            const angleY = (centerX - x) / 20;
+            
+            card.style.transform = 
+                `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) translateZ(10px)`;
+        }
+        
+        function resetCardPosition(e) {
+            const card = e.currentTarget;
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+        }
+        
+        function setCyberneticPhrase() {
+            const phrases = [
+                "Awaiting neural interface connection...",
+                "Cybernetic systems operational",
+                "No contact protocols initialized",
+                "System in standby: awaiting command input",
+                "Neural network calibrating...",
+                "Quantum entanglement established",
+                "Consciousness matrix online",
+                "Digital presence in stealth mode",
+                "Contact subroutines temporarily disabled",
+                "Transhuman protocol: initialization complete"
+            ];
+            
+            const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+            document.getElementById('cybernetic-phrase').textContent = randomPhrase;
+        }
+        
+        function animateText(element, speed) {
+            const text = element.textContent;
+            element.textContent = '';
+            element.setAttribute('data-text', '');
+            let i = 0;
+            
+            function typeWriter() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    element.setAttribute('data-text', element.textContent);
+                    i++;
+                    setTimeout(typeWriter, speed + Math.random() * 50);
+                }
+            }
+            
+            typeWriter();
+        }
+    </script>
+</body>
+</html>
