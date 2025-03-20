@@ -1,0 +1,481 @@
+/* Base styles */
+:root {
+  --primary-color: #0071e3;
+  --secondary-color: #3498db;
+  --text-color: #1d1d1f;
+  --text-light: #86868b;
+  --bg-color: #f5f5f7;
+  --bg-light: #fff;
+  --border-color: #e5e5e7;
+  --border-radius: 8px;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --transition: all 0.3s ease;
+  
+  /* Component colors */
+  --management-color: #9b59b6;
+  --management-bg: #f5eef8;
+  --virtualization-color: #f1c40f;
+  --virtualization-bg: #fef9e7;
+  --networking-color: #e74c3c;
+  --networking-bg: #fdedec;
+  --foundation-color: #27ae60;
+  --foundation-bg: #e9f7ef;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.5;
+}
+
+/* Layout */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.header {
+  background-color: var(--bg-light);
+  border-bottom: 1px solid var(--border-color);
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.app-title {
+  font-weight: 600;
+  font-size: 18px;
+  color: var(--primary-color);
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+}
+
+.sidebar {
+  width: 400px;
+  background-color: var(--bg-light);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.preview-area {
+  flex: 1;
+  padding: 40px;
+  overflow-y: auto;
+}
+
+/* Form elements */
+.editor {
+  width: 100%;
+  height: 500px;
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 14px;
+  line-height: 1.4;
+  resize: none;
+}
+
+.button-container {
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 18px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn:hover {
+  background-color: #0062c3;
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(0, 113, 227, 0.05);
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  margin-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tab {
+  padding: 8px 15px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-light);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: var(--transition);
+}
+
+.tab.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+.tab:hover:not(.active) {
+  color: var(--text-color);
+  background-color: rgba(0,0,0,0.02);
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+/* Diagram components */
+.diagram-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.diagram-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.version-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.diagram-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.diagram-description {
+  font-size: 16px;
+  color: var(--text-light);
+  margin: 0 auto;
+  max-width: 700px;
+}
+
+.architecture-container {
+  border: 3px solid var(--secondary-color);
+  border-radius: var(--border-radius);
+  padding: 30px;
+  background-color: var(--bg-light);
+  position: relative;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 40px;
+}
+
+.architecture-label {
+  position: absolute;
+  top: -14px;
+  left: 30px;
+  background-color: var(--bg-light);
+  padding: 0 15px;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--secondary-color);
+}
+
+.architecture-description {
+  text-align: center;
+  color: var(--text-light);
+  font-size: 14px;
+  margin-bottom: 30px;
+}
+
+.components-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.component {
+  width: 90%;
+  border: 2px solid;
+  border-radius: var(--border-radius);
+  padding: 20px;
+  background-color: var(--bg-light);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.component:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.connector {
+  width: 2px;
+  height: 20px;
+  background: linear-gradient(to bottom, currentColor, rgba(0,0,0,0.2));
+  margin: 0 auto;
+}
+
+.component-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  justify-content: space-between;
+}
+
+.component-type {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  background-color: rgba(0,0,0,0.05);
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.component-title {
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0;
+}
+
+.component-description {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 15px;
+}
+
+.features-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 15px;
+}
+
+.feature-item {
+  font-size: 12px;
+  background-color: rgba(0,0,0,0.04);
+  border-radius: 12px;
+  padding: 4px 12px;
+}
+
+.sub-components {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.sub-component {
+  width: 48%;
+  border: 2px solid;
+  border-radius: var(--border-radius);
+  padding: 15px;
+  background-color: var(--bg-light);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.sub-component:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.network-section {
+  margin-top: 20px;
+}
+
+.private-network {
+  border: 1px dashed;
+  border-radius: var(--border-radius);
+  padding: 15px;
+  margin: 15px 0;
+  text-align: center;
+}
+
+.port-mappings {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.vm-mappings {
+  flex: 1;
+  min-width: 200px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  background-color: var(--bg-color);
+}
+
+.vm-title {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.port-mapping {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--text-light);
+  background-color: var(--bg-light);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 6px 10px;
+  margin: 5px 0;
+}
+
+.port-service {
+  font-weight: 500;
+}
+
+.port-arrow {
+  color: var(--primary-color);
+  margin: 0 5px;
+}
+
+.intervm-communication {
+  background-color: rgba(0,0,0,0.03);
+  border-radius: var(--border-radius);
+  padding: 12px;
+  margin-top: 15px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.intervm-label {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.additional-sections {
+  margin-top: 40px;
+}
+
+.section {
+  background-color: var(--bg-light);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.section-title {
+  font-weight: 600;
+  font-size: 18px;
+  margin: 0 0 15px 0;
+  color: var(--text-color);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 10px;
+}
+
+.data-row {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.data-label {
+  font-weight: 500;
+  width: 180px;
+  color: var(--text-color);
+}
+
+.data-value {
+  color: var(--text-light);
+  flex: 1;
+}
+
+/* Component specific colors */
+.management-component {
+  border-color: var(--management-color);
+  background-color: var(--management-bg);
+}
+
+.virtualization-component {
+  border-color: var(--virtualization-color);
+  background-color: var(--virtualization-bg);
+}
+
+.networking-component {
+  border-color: var(--networking-color);
+  background-color: var(--networking-bg);
+}
+
+.foundation-component {
+  border-color: var(--foundation-color);
+  background-color: var(--foundation-bg);
+}
+
+/* Responsive design */
+@media (max-width: 1200px) {
+  .main-content {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+  
+  .editor {
+    height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sub-components {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .sub-component {
+    width: 100%;
+  }
+  
+  .port-mappings {
+    flex-direction: column;
+  }
+  
+  .component {
+    width: 100%;
+  }
+}
